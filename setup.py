@@ -11,11 +11,11 @@ setuptools.setup(
     description='Helps in getting array and histogram of a greyscale image. Also, image from the array.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='',
+    url='https://github.com/rishi-chauhan/my-packages.git',
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 2.7',
-        'License :: OSI Approved :: Mozilla Public License 2.0',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
 )
