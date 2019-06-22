@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='image_array_and_histogram-rrsc',
-    version='0.0.1',
+    version='0.0.2',
     author='Rishi Raj Singh Chauhan',
     author_email='rishirschauhan@gmail.com',
     description='Helps in getting array and histogram of a greyscale image. Also, image from the array.',
