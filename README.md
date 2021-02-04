@@ -1,5 +1,4 @@
 # Image array and histogram
-
 This python package helps you to get an array and histogram of a greyscale image. You can also convert an array to greyscale image.
 
 ## Installation
