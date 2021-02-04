@@ -4,8 +4,8 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='image_array_and_histogram-rrsc',
-    version='0.0.2',
+    name='image_array_and_histogram',
+    version='0.0.3',
     author='Rishi Raj Singh Chauhan',
     author_email='rishirschauhan@gmail.com',
     description='Helps in getting array and histogram of a greyscale image. Also, image from the array.',
@@ -14,7 +14,7 @@ setuptools.setup(
     url='https://github.com/rishi-chauhan/my-packages.git',
     packages=setuptools.find_packages(),
     classifiers=[
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],

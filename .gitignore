@@ -1,0 +1,6 @@
+# Folders to exclude
+build/
+dist/
+image_array_and_histogram_rrsc.egg-info/
+image_array_and_histogram/main.pyc
+.vscode/

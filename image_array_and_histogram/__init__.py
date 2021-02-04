@@ -1,4 +1,4 @@
-import main.py
+import main
 
 __name__ = 'Image array and histogram'
 __author__ = 'Rishi Raj Singh Chauhan <rishirschauhan@gmail.com>'
