@@ -3,7 +3,7 @@ This python package helps you to get an array and histogram of a greyscale image
 
 ## Installation
 ```sh
-$ pip install image-array-and-histogram-rrsc
+$ pip install image-array-and-histogram
 ```
 
 ## Functions
