@@ -7,7 +7,7 @@ setup(
     name='image_array_and_histogram',
     version='1.1.0',
     author='Rishi Raj Singh Chauhan',
-    author_email='rishirschauhan@gmail.com',
+    author_email='',
     description='Utilities to get arrays & histograms from grayscale images and build images from arrays.',
     long_description=long_description,
     long_description_content_type='text/markdown',

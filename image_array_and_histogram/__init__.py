@@ -23,5 +23,5 @@ __all__ = [
 	"getImageFromArray",
 ]
 
-__author__ = 'Rishi Raj Singh Chauhan <rishirschauhan@gmail.com>'
+__author__ = 'Rishi Raj Singh Chauhan'
 __version__ = '1.1.0'
