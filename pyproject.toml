@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image_array_and_histogram"
+version = "1.1.0"
+description = "Utilities to get arrays & histograms from grayscale images and build images from arrays."
+readme = "README.md"
+authors = [{ name = "Rishi Raj Singh Chauhan", email = "rishirschauhan@gmail.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+  "numpy>=1.20",
+  "Pillow>=9.0",
+]
+keywords = ["image", "histogram", "numpy", "pillow", "grayscale"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Multimedia :: Graphics",
+  "Topic :: Scientific/Engineering :: Image Processing",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "build"]
+
+[project.urls]
+Homepage = "https://github.com/rishi-chauhan/my-packages"
+"Issue Tracker" = "https://github.com/rishi-chauhan/my-packages/issues"
