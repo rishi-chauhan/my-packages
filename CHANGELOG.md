@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [1.1.1] - 2025-08-12
 
 ### Changed
+
 - Removed author email from package metadata for privacy.
 
 ### Security
+
 - Metadata-only change; no code modifications.
 
 ## [1.1.0] - 2025-08-12
