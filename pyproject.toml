@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "image_array_and_histogram"
-version = "1.1.0"
+version = "1.1.1"
 description = "Utilities to get arrays & histograms from grayscale images and build images from arrays."
 readme = "README.md"
 authors = [{ name = "Rishi Raj Singh Chauhan" }]

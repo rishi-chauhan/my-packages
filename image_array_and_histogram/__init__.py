@@ -24,4 +24,4 @@ __all__ = [
 ]
 
 __author__ = 'Rishi Raj Singh Chauhan'
-__version__ = '1.1.0'
+__version__ = '1.1.1'

@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='image_array_and_histogram',
-    version='1.1.0',
+    version='1.1.1',
     author='Rishi Raj Singh Chauhan',
     author_email='',
     description='Utilities to get arrays & histograms from grayscale images and build images from arrays.',
