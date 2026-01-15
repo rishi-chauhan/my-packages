@@ -16,7 +16,7 @@ confusing and is considered a bug fix; the minor version has been bumped.
 
 from __future__ import annotations
 
-from typing import Iterable, Sequence, Union, Optional
+from typing import Sequence, Union, Optional
 import warnings
 
 import numpy as np
