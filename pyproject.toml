@@ -25,7 +25,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "build", "ruff>=0.4"]
+dev = ["pytest>=7", "pytest-cov>=4.0", "build", "ruff>=0.4"]
 
 [project.urls]
 Homepage = "https://github.com/rishi-chauhan/my-packages"

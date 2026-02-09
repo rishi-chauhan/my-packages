@@ -1,30 +1,16 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Distribution / packaging
 build/
 dist/
 *.egg-info/
 *.egg
-
-# Virtual environments
 .venv/
 venv/
-
-# Test / coverage
 .pytest_cache/
 .coverage*
 htmlcov/
-
-# IDE
 .idea/
 .vscode/
-# Folders to exclude
-build/
-dist/
 image_array_and_histogram_rrsc.egg-info/
 image_array_and_histogram.egg-info/
-*.pyc
-.vscode/

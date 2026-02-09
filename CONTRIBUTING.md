@@ -33,7 +33,7 @@ If you'd like to contribute code, you can open a pull request.
 2.  Create a new branch for your feature or bug fix.
 3.  Make your changes and commit them with a clear and descriptive commit message.
 4.  Push your changes to your fork.
-5.  Open a pull request to the `main` branch of this repository.
+5.  Open a pull request to the `master` branch of this repository.
 
 Please make sure your code follows the existing code style and that you've added or updated tests as appropriate.
 
