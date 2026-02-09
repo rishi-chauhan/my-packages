@@ -1,8 +1,8 @@
 # image_array_and_histogram
 
-![CI](https://github.com/rishi-chauhan/my-packages/actions/workflows/ci.yml/badge.svg)
-![PyPI - Version](https://img.shields.io/pypi/v/image-array-and-histogram)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/image-array-and-histogram)
+[![CI](https://github.com/rishi-chauhan/my-packages/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-chauhan/my-packages/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/image-array-and-histogram.svg)](https://pypi.org/project/image-array-and-histogram/)
+[![Python versions](https://img.shields.io/pypi/pyversions/image-array-and-histogram.svg)](https://pypi.org/project/image-array-and-histogram/)
 
 Utilities to convert images to NumPy arrays, compute grayscale histograms, and
 reconstruct images from arrays.
