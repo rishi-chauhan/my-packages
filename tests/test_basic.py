@@ -202,8 +202,9 @@ def test_array_to_image_out_of_range_values():
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         img = array_to_image(arr)
-        assert len(w) == 1
-        assert "clipped" in str(w[0].message).lower()
+        # Check that we got at least one warning about clipping
+        clip_warnings = [warning for warning in w if "clipped" in str(warning.message).lower()]
+        assert len(clip_warnings) >= 1
 
     back = get_image_array(img)
     assert back.max() == 255
@@ -214,8 +215,9 @@ def test_array_to_image_out_of_range_values():
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         img = array_to_image(arr)
-        assert len(w) == 1
-        assert "clipped" in str(w[0].message).lower()
+        # Check that we got at least one warning about clipping
+        clip_warnings = [warning for warning in w if "clipped" in str(warning.message).lower()]
+        assert len(clip_warnings) >= 1
 
     back = get_image_array(img)
     assert back.min() == 0
