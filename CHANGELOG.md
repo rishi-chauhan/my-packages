@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.2] - 2026-11-21
+
+No code changes.
+
+### Changed
+
+- First release published entirely from the renamed repository
+  (https://github.com/rishi-chauhan/imghist). Its PyPI attestation comes from the same
+  repository as 2.1.1, which clears the "Change of provenance" notice that the rename
+  triggered on PyPI.
+
 ## [2.1.1] - 2026-11-21
 
 No code changes.
