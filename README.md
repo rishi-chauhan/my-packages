@@ -51,19 +51,28 @@ Returns a 2D NumPy array of shape `(height, width)` with dtype `uint8`.
 Returns a 256-element list representing the pixel intensity histogram.
 
 **Parameters:**
-- `image_or_array` (PIL.Image.Image | array-like): PIL image or 2D array of pixels
+- `image_or_array` (PIL.Image.Image | array-like): PIL image, 2D array of pixels, or an
+  `(H, W, 3/4)` RGB(A) array (converted to grayscale; alpha is ignored). Floats are rounded,
+  out-of-range values are clipped with a `RuntimeWarning`, and NaN/inf raise `ValueError`.
 - `as_density` (bool): If True, returns normalized probabilities summing to 1.0. Default: False
 
-### `array_to_image(arr, width=None, height=None)`
+### `array_to_image(arr, width=None, height=None, *, validate_range=True)`
 
-Creates a grayscale PIL image from a 1D or 2D array.
+Creates a grayscale (mode `L`) PIL image from a 1D or 2D array.
 
 **Parameters:**
 - `arr` (array-like): 1D or 2D array of pixel values (0-255)
-- `width` (int, optional): Required if `arr` is 1D
-- `height` (int, optional): Required if `arr` is 1D
+- `width` (int, optional): Required if `arr` is 1D; must be positive
+- `height` (int, optional): Required if `arr` is 1D; must be positive
+- `validate_range` (bool): If True (default), values outside [0, 255] are clipped and a
+  `RuntimeWarning` is emitted. If False, values outside [0, 255] raise `ValueError`.
 
-**Note:** Values outside [0, 255] are automatically clipped with a warning.
+**Value handling:**
+- Float values are rounded to the nearest integer (round half to even), never truncated.
+- Boolean arrays map `False` to 0 and `True` to 255.
+- NaN or infinite values raise `ValueError`; empty arrays raise `ValueError`.
+
+**Note:** in 1.x all output is 8-bit. 16-bit and float images are reduced to 8 bits.
 
 ## Migration from 1.0.x
 

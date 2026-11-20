@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.9] - 2026-11-21
+
+### Fixed
+
+- `array_to_image(..., validate_range=False)` now raises `ValueError` for values outside
+  [0, 255], as documented, instead of silently clipping them.
+- `get_hist` on an RGB(A) array with values above 255 no longer wraps around (300 was
+  counted in bin 44); values are clipped with a `RuntimeWarning`.
+- `get_hist` on a grayscale array with out-of-range values now warns (`RuntimeWarning`)
+  instead of clipping silently.
+- `array_to_image` on an empty array raises a clear `ValueError` ("arr must contain at least
+  one pixel") instead of a NumPy reduction error; zero or negative `width`/`height` are
+  rejected with a message naming the parameter.
+- Float pixel values are rounded to the nearest integer (round half to even) instead of
+  truncated (127.9 became 127).
+- NaN or infinite values raise `ValueError` instead of being counted in bin 0 with a NumPy
+  cast warning. Non-numeric arrays raise `TypeError`.
+- Boolean arrays map to 0/255 (the usual mask-to-image convention).
+- Clipping warnings now point at the caller's line, not at library internals.
+- `array_to_image` no longer passes Pillow's deprecated `mode=` argument to `Image.fromarray`.
+- `__version__` now matches the released version (it was stuck at 1.1.1).
+- `get_hist` no longer makes an unnecessary copy of array input.
+
+### Documentation
+
+- `get_image_array` documents that 1.x output is always 8-bit (16-bit and float images are
+  clipped); native 16-bit/float support is planned for 2.0.
+
+## [1.1.8] - 2026-02-09
+
+- Test fix (out-of-range test handles multiple warnings). No functional changes.
+
+## [1.1.7] - 2026-02-09
+
+- CI/CD improvements and an expanded test suite (edge cases, errors, deprecated wrappers).
+  No functional changes.
+
+## [1.1.3]–[1.1.6] - 2026-01-16 to 2026-01-24
+
+- Maintenance releases fixing the CI and PyPI publish workflows. No functional changes.
+
+## [1.1.2] - 2026-01-16
+
+- Added CONTRIBUTING and Code of Conduct, ruff linting in CI, tag-based PyPI publishing and
+  README badges. No functional changes.
+
 ## [1.1.1] - 2025-08-12
 
 ### Changed
