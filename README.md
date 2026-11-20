@@ -13,6 +13,9 @@ Python utilities for converting images to NumPy arrays, computing grayscale hist
 pip install image-array-and-histogram
 ```
 
+Requires Python 3.10 or newer, NumPy 1.23+ and Pillow 10+. The package ships type hints
+(`py.typed`).
+
 ## Usage
 
 ```python
@@ -90,10 +93,11 @@ cd my-packages
 pip install -e .[dev]
 ```
 
-Run tests:
+Run the checks (see [CONTRIBUTING.md](CONTRIBUTING.md) for the full list):
 
 ```sh
-pytest
+ruff check . && ruff format --check . && mypy
+pytest --cov=image_array_and_histogram --cov-fail-under=95
 ```
 
 ## Contributing

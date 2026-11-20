@@ -37,9 +37,31 @@ If you'd like to contribute code, you can open a pull request.
 
 Please make sure your code follows the existing code style and that you've added or updated tests as appropriate.
 
+## Development setup
+
+```sh
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+## Checks
+
+Every pull request must pass the same checks CI runs:
+
+```sh
+ruff check .
+ruff format --check .
+mypy
+pytest --cov=image_array_and_histogram --cov-report=term-missing --cov-fail-under=95
+python -m build && twine check dist/*
+```
+
 ## Styleguides
 
-This project follows the [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for Python code.
+Code is formatted with `ruff format` and linted with `ruff check` (configured in
+`pyproject.toml`). Public functions need full type hints (checked with `mypy --strict`) and a
+NumPy-style docstring. Commit messages follow
+[Conventional Commits](https://www.conventionalcommits.org/) (`fix:`, `feat:`, `docs:`, ...).
 
 ## Code of Conduct
 

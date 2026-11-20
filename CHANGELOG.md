@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-11-21
+
+No API changes.
+
+### Changed
+
+- Requires Python 3.10 or newer (3.8 and 3.9 are end-of-life). Tested on 3.10–3.14.
+- Minimum dependencies raised to NumPy 1.23 and Pillow 10.0.
+- The package is now typed: ships `py.typed` and passes `mypy --strict`. Signatures use
+  `numpy.typing.ArrayLike` / `NDArray`.
+- `__version__` is read from the installed package metadata, so it can no longer drift from
+  the released version.
+- License metadata uses the SPDX expression `MIT`.
+
+### CI
+
+- Test matrix 3.10–3.14 plus a job that tests the minimum NumPy/Pillow versions.
+- Lint job runs `ruff check`, `ruff format --check` and `mypy`; tests enforce 95% coverage;
+  builds are checked with `twine check`.
+- The publish workflow runs the tests first, refuses to publish if the tag doesn't match the
+  package version, and no longer skips existing versions silently.
+
 ## [1.1.9] - 2026-11-21
 
 ### Fixed
