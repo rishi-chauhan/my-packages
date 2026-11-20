@@ -1,8 +1,8 @@
 # image-array-and-histogram
 
 [![CI](https://github.com/rishi-chauhan/imghist/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-chauhan/imghist/actions/workflows/ci.yml)
-[![PyPI version](https://img.shields.io/pypi/v/image-array-and-histogram.svg)](https://pypi.org/project/image-array-and-histogram/)
-[![Python versions](https://img.shields.io/pypi/pyversions/image-array-and-histogram.svg)](https://pypi.org/project/image-array-and-histogram/)
+[![PyPI](https://img.shields.io/pypi/v/image-array-and-histogram?label=PyPI)](https://pypi.org/project/image-array-and-histogram/)
+[![Python](https://img.shields.io/pypi/pyversions/image-array-and-histogram?label=Python)](https://pypi.org/project/image-array-and-histogram/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Fast image histograms, exposure statistics and histogram comparison for NumPy and Pillow,
