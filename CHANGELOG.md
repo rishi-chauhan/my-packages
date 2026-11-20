@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-11-21
+
+No API changes.
+
+### Security
+
+- Require Pillow 13.0.0 or newer. Every earlier Pillow release has publicly listed
+  vulnerabilities (for example buffer overflows and decompression-bomb bypasses in the TIFF,
+  JPEG, PSD and GIF decoders, fixed in 13.0.0), and `imghist` opens arbitrary image files.
+- Build with setuptools 84.1.0 or newer (fixes for CVE-2025-47273, CVE-2026-59890 and
+  GHSA-xmj3-9gf7-h52w).
+
+### Changed
+
+- Requires Python 3.11 or newer: Python 3.10 reached end-of-life in October 2026, and Pillow
+  13 no longer supports it.
+- Added support for Python 3.15; tested on 3.11–3.15.
+- Minimum NumPy is now 1.23.2, the first release with Python 3.11 wheels.
+
 ## [2.0.0] - 2026-11-21
 
 A major release that turns the package into a histogram and exposure-statistics toolkit. See

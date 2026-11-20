@@ -22,7 +22,9 @@ pip install image-array-and-histogram
 pip install "image-array-and-histogram[plot]"
 ```
 
-Requires Python 3.10+, NumPy 1.23+ and Pillow 10+. The package ships type hints.
+Requires Python 3.11+ (tested on 3.11–3.15), NumPy 1.23.2+ and Pillow 13+. The minimum
+Pillow version is the first release without publicly known security vulnerabilities, since
+this library opens arbitrary image files. The package ships type hints.
 
 ## Quick start
 
