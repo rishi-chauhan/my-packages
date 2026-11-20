@@ -6,7 +6,7 @@ First off, thank you for considering contributing to this project! Any and all c
 
 ### Reporting Bugs
 
-If you find a bug, please open an issue on our [issue tracker](https://github.com/rishi-chauhan/my-packages/issues).
+If you find a bug, please open an issue on our [issue tracker](https://github.com/rishi-chauhan/imghist/issues).
 
 Please include the following information in your bug report:
 
@@ -17,7 +17,7 @@ Please include the following information in your bug report:
 
 ### Suggesting Enhancements
 
-If you have an idea for a new feature or an improvement to an existing one, please open an issue on our [issue tracker](https://github.com/rishi-chauhan/my-packages/issues).
+If you have an idea for a new feature or an improvement to an existing one, please open an issue on our [issue tracker](https://github.com/rishi-chauhan/imghist/issues).
 
 Please include the following information in your enhancement suggestion:
 

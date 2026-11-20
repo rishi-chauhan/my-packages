@@ -1,6 +1,6 @@
 # image-array-and-histogram
 
-[![CI](https://github.com/rishi-chauhan/my-packages/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-chauhan/my-packages/actions/workflows/ci.yml)
+[![CI](https://github.com/rishi-chauhan/imghist/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-chauhan/imghist/actions/workflows/ci.yml)
 [![PyPI version](https://img.shields.io/pypi/v/image-array-and-histogram.svg)](https://pypi.org/project/image-array-and-histogram/)
 [![Python versions](https://img.shields.io/pypi/pyversions/image-array-and-histogram.svg)](https://pypi.org/project/image-array-and-histogram/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -209,8 +209,8 @@ Behaviour changes to watch for:
 ## Development
 
 ```sh
-git clone https://github.com/rishi-chauhan/my-packages.git
-cd my-packages
+git clone https://github.com/rishi-chauhan/imghist.git
+cd imghist
 pip install -e ".[dev]"
 ruff check . && ruff format --check . && mypy
 pytest --cov=image_array_and_histogram --cov-fail-under=95

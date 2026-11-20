@@ -51,9 +51,9 @@ dev = [
 imghist = "image_array_and_histogram.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/rishi-chauhan/my-packages"
-"Issue Tracker" = "https://github.com/rishi-chauhan/my-packages/issues"
-Changelog = "https://github.com/rishi-chauhan/my-packages/blob/master/CHANGELOG.md"
+Homepage = "https://github.com/rishi-chauhan/imghist"
+"Issue Tracker" = "https://github.com/rishi-chauhan/imghist/issues"
+Changelog = "https://github.com/rishi-chauhan/imghist/blob/master/CHANGELOG.md"
 
 [tool.setuptools]
 packages = ["image_array_and_histogram"]
