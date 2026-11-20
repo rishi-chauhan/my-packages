@@ -55,7 +55,7 @@ jobs:
       - name: Install minimum dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install "numpy==1.23.*" "Pillow==10.0.*" "pytest>=8" "pytest-cov>=5"
+          pip install "numpy==1.23.*" "Pillow==10.0.*" "pytest>=8" "pytest-cov>=5" "hypothesis>=6.100"
           pip install -e . --no-deps
       - name: Run tests
         run: pytest --cov=image_array_and_histogram --cov-report=term-missing
