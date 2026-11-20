@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "image_array_and_histogram"
-version = "2.1.0"
+version = "2.1.1"
 description = "Fast image histograms, exposure statistics and histogram comparison for NumPy/Pillow, with a CLI."
 readme = "README.md"
 authors = [{ name = "Rishi Raj Singh Chauhan" }]

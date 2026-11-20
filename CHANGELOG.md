@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2026-11-21
+
+No code changes.
+
+### Changed
+
+- The repository moved to https://github.com/rishi-chauhan/imghist (the old
+  `my-packages` URL redirects). Project links on PyPI now point there.
+- Refreshed the README badges.
+
+### CI
+
+- GitHub Actions are pinned to commit SHAs (including the PyPI publish action, which tracked
+  a moving branch), `actions/checkout` no longer persists credentials, and Dependabot keeps
+  actions and Python dependencies up to date.
+- Removed unused PyPI credentials from the repository; publishing uses trusted publishing only.
+
 ## [2.1.0] - 2026-11-21
 
 No API changes.
