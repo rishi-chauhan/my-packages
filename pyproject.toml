@@ -1,19 +1,19 @@
 [build-system]
-requires = ["setuptools>=77", "wheel"]
+requires = ["setuptools>=84.1.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "image_array_and_histogram"
-version = "2.0.0"
+version = "2.1.0"
 description = "Fast image histograms, exposure statistics and histogram comparison for NumPy/Pillow, with a CLI."
 readme = "README.md"
 authors = [{ name = "Rishi Raj Singh Chauhan" }]
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-  "numpy>=1.23",
-  "Pillow>=10.0",
+  "numpy>=1.23.2",
+  "Pillow>=13.0.0",
 ]
 keywords = ["image", "histogram", "numpy", "pillow", "grayscale", "statistics", "exposure", "dataset", "cli"]
 classifiers = [
@@ -23,11 +23,11 @@ classifiers = [
   "Environment :: Console",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Operating System :: OS Independent",
   "Topic :: Multimedia :: Graphics",
   "Topic :: Scientific/Engineering :: Image Processing",
@@ -68,7 +68,7 @@ warn_unreachable = true
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP", "SIM", "NPY", "RUF", "PERF", "PT", "D"]
