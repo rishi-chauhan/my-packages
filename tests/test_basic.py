@@ -53,9 +53,10 @@ def test_array_to_image_flat_input():
 # Edge Case Tests
 # ============================================================================
 
+
 def test_single_pixel_image():
     """Test handling of single-pixel images."""
-    img = Image.new('L', (1, 1), color=128)
+    img = Image.new("L", (1, 1), color=128)
     arr = get_image_array(img)
     assert arr.shape == (1, 1)
     assert arr[0, 0] == 128
@@ -108,9 +109,9 @@ def test_histogram_as_density():
 
     assert len(hist) == 256
     assert abs(sum(hist) - 1.0) < 1e-10  # Should sum to 1.0
-    assert abs(hist[0] - 1/3) < 1e-10
-    assert abs(hist[128] - 1/3) < 1e-10
-    assert abs(hist[255] - 1/3) < 1e-10
+    assert abs(hist[0] - 1 / 3) < 1e-10
+    assert abs(hist[128] - 1 / 3) < 1e-10
+    assert abs(hist[255] - 1 / 3) < 1e-10
 
 
 def test_histogram_density_empty():
@@ -124,6 +125,7 @@ def test_histogram_density_empty():
 # ============================================================================
 # Error Condition Tests
 # ============================================================================
+
 
 def test_array_to_image_missing_dimensions():
     """Test that flat array without dimensions raises error."""
@@ -175,7 +177,7 @@ def test_get_image_array_converts_rgb_to_2d():
     """RGB images are converted to a 2D grayscale array."""
     # Create a 3D array and try to pass it as grayscale
     arr_3d = np.zeros((5, 5, 3), dtype=np.uint8)
-    img = Image.fromarray(arr_3d, mode='RGB')
+    img = Image.fromarray(arr_3d, mode="RGB")
 
     # This should work due to automatic conversion
     result = get_image_array(img)
@@ -229,7 +231,7 @@ def test_rgb_to_grayscale_conversion():
     # Create RGB image
     rgb_arr = np.zeros((10, 10, 3), dtype=np.uint8)
     rgb_arr[:, :, 0] = 255  # Red channel
-    img = Image.fromarray(rgb_arr, mode='RGB')
+    img = Image.fromarray(rgb_arr, mode="RGB")
 
     # Should convert to grayscale automatically
     gray_arr = get_image_array(img, ensure_grayscale=True)
@@ -243,7 +245,7 @@ def test_rgba_to_grayscale_conversion():
     rgba_arr = np.zeros((10, 10, 4), dtype=np.uint8)
     rgba_arr[:, :, 0] = 255  # Red channel
     rgba_arr[:, :, 3] = 255  # Alpha channel
-    img = Image.fromarray(rgba_arr, mode='RGBA')
+    img = Image.fromarray(rgba_arr, mode="RGBA")
 
     # Should convert to grayscale automatically
     gray_arr = get_image_array(img, ensure_grayscale=True)
@@ -276,9 +278,10 @@ def test_get_hist_with_rgba_array():
 # Deprecated Function Tests
 # ============================================================================
 
+
 def test_deprecated_getImageArray():
     """Test deprecated getImageArray function."""
-    img = Image.new('L', (10, 10), color=128)
+    img = Image.new("L", (10, 10), color=128)
 
     with pytest.warns(DeprecationWarning, match="getImageArray is deprecated"):
         arr = getImageArray(img)
@@ -311,6 +314,7 @@ def test_deprecated_getImageFromArray():
 # ============================================================================
 # Type Coercion Tests
 # ============================================================================
+
 
 def test_array_to_image_float_coercion():
     """Test that float arrays are properly converted to uint8."""

@@ -21,7 +21,7 @@ import numpy as np
 from image_array_and_histogram import get_image_array, get_hist, array_to_image
 
 # Convert image to array
-img = Image.open('photo.jpg')
+img = Image.open("photo.jpg")
 arr = get_image_array(img)  # shape: (height, width)
 
 # Compute histogram
@@ -33,7 +33,7 @@ hist_density = get_hist(arr, as_density=True)
 # Create image from array
 gradient = np.linspace(0, 255, 256, dtype=np.uint8).reshape(16, 16)
 gradient_img = array_to_image(gradient)
-gradient_img.save('gradient.png')
+gradient_img.save("gradient.png")
 ```
 
 ## API Reference
