@@ -1,7 +1,7 @@
 # image-array-and-histogram
 
 [![CI](https://github.com/rishi-chauhan/imghist/actions/workflows/ci.yml/badge.svg)](https://github.com/rishi-chauhan/imghist/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/image-array-and-histogram?label=PyPI)](https://pypi.org/project/image-array-and-histogram/)
+[![PyPI](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fpypi.org%2Fpypi%2Fimage-array-and-histogram%2Fjson&query=%24.info.version&prefix=v&label=PyPI&color=blue)](https://pypi.org/project/image-array-and-histogram/)
 [![Python](https://img.shields.io/pypi/pyversions/image-array-and-histogram?label=Python)](https://pypi.org/project/image-array-and-histogram/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
