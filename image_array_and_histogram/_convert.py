@@ -67,7 +67,12 @@ def _pil_to_array(image: Image.Image, channels: Channels) -> NDArray[Any]:
     if image.mode in _NATIVE_MODES:
         if channels == "rgb":
             raise ValueError(f"channels='rgb' requires a colour image; got mode {image.mode!r}")
-        return _native_byteorder(np.asarray(image))
+        arr = _native_byteorder(np.asarray(image))
+        # Older Pillow versions open 16-bit PNGs as 32-bit mode "I"; treat data that
+        # fits in 16 bits as uint16 so results don't depend on the Pillow version.
+        if image.mode == "I" and arr.size and arr.min() >= 0 and arr.max() <= 65535:
+            return arr.astype(np.uint16)
+        return arr
     return np.asarray(image.convert("L" if channels == "gray" else "RGB"))
 
 
@@ -133,8 +138,9 @@ def get_image_array(
     -------
     numpy.ndarray
         The pixel data. The native bit depth is kept: 8-bit images give uint8,
-        16-bit images (``I;16``) give uint16, ``I`` gives int32 and ``F`` gives
-        float32.
+        16-bit images (``I;16``) give uint16, ``I`` gives int32 (uint16 when all
+        values fit in 16 bits, since older Pillow opens 16-bit PNGs as ``I``) and
+        ``F`` gives float32.
 
     Raises
     ------

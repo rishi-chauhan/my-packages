@@ -65,12 +65,26 @@ def test_get_image_array_big_endian_16_bit_is_native():
     np.testing.assert_array_equal(arr, data)
 
 
-@pytest.mark.parametrize(("mode", "dtype"), [("I", np.int32), ("F", np.float32)])
-def test_get_image_array_keeps_int32_and_float(mode, dtype):
-    img = Image.fromarray(np.array([[1, 300]], dtype=np.uint16)).convert(mode)
+def test_get_image_array_float_mode():
+    img = Image.fromarray(np.array([[1.5, 300.25]], dtype=np.float32))
     arr = get_image_array(img)
-    assert arr.dtype == dtype
-    np.testing.assert_array_equal(arr, [[1, 300]])
+    assert arr.dtype == np.float32
+    np.testing.assert_array_equal(arr, [[1.5, 300.25]])
+
+
+def test_mode_i_with_16_bit_values_becomes_uint16():
+    img = Image.fromarray(np.array([[1, 65535]], dtype=np.int32))
+    assert img.mode == "I"
+    arr = get_image_array(img)
+    assert arr.dtype == np.uint16
+    np.testing.assert_array_equal(arr, [[1, 65535]])
+
+
+@pytest.mark.parametrize("values", [[-5, 10], [0, 70_000]])
+def test_mode_i_outside_16_bits_stays_int32(values):
+    arr = get_image_array(Image.fromarray(np.array([values], dtype=np.int32)))
+    assert arr.dtype == np.int32
+    np.testing.assert_array_equal(arr, [values])
 
 
 @pytest.mark.parametrize("mode", ["I;16", "I", "F"])
