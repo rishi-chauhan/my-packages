@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-11-21
+
+A major release that turns the package into a histogram and exposure-statistics toolkit. See
+"Migrating from 1.x" in the README.
+
+### Added
+
+- `get_hist` options: `channels="rgb"` (one row per channel), `bins`, `value_range`, and
+  native 16-bit, other integer and float data. Fast `np.bincount` paths for uint8/uint16 that
+  match `np.histogram` exactly.
+- `hist_stats`, `stats_from_counts` and the `HistStats` dataclass: count, mean, std, min, max,
+  median, percentiles, entropy and clipped-shadow/highlight fractions, computed in O(bins).
+- `compare_hist` with `intersection`, `chi2`, `bhattacharyya`, `correlation` and `emd`.
+- `HistAccumulator` for streaming one histogram over many images, with `merge()` for
+  multiprocessing.
+- The `imghist` command-line tool (`imghist stats`, `imghist compare`) for files and folders:
+  text, JSON and CSV output, per-file reports, parallel processing (`-j`), and plots with the
+  new `[plot]` extra. Also available as `python -m image_array_and_histogram`.
+- `array_to_image` builds RGB/RGBA images from `(H, W, 3/4)` arrays and lossless 16-bit
+  images from 2-D uint16 arrays.
+- `get_image_array(mode="rgb" | "keep")`.
+
+### Changed
+
+- `get_hist` returns an `np.ndarray` (int64, or float64 with `density=True`) instead of a list.
+- `get_hist(as_density=...)` is renamed to `density`, matching `np.histogram`.
+- `get_image_array(ensure_grayscale=...)` is replaced by `mode="gray" | "rgb" | "keep"`, and
+  16-bit/float images keep their native dtype instead of being reduced to 8 bits.
+- `array_to_image(validate_range=...)` is renamed to `clip`.
+
+### Removed
+
+- The deprecated camelCase functions `getImageArray`, `getHist` and `getImageFromArray`.
+- The `image_array_and_histogram.main` module; import everything from the package root.
+
 ## [1.2.0] - 2026-11-21
 
 No API changes.
