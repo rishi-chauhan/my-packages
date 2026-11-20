@@ -14,3 +14,5 @@ htmlcov/
 .vscode/
 image_array_and_histogram_rrsc.egg-info/
 image_array_and_histogram.egg-info/
+.mypy_cache/
+.ruff_cache/

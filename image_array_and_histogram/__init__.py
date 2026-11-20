@@ -1,20 +1,30 @@
-"""image_array_and_histogram public API.
+"""Convert images to NumPy arrays, compute grayscale histograms, and build images from arrays.
 
-This version modernizes the API with PEP-8 function names while keeping
-backward compatible deprecated camelCase aliases.
+The public API uses PEP-8 function names. Deprecated camelCase aliases are kept
+for backward compatibility and emit a ``DeprecationWarning``.
 """
+
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _version
 
 from .main import (
     array_to_image,
     get_hist,
     get_image_array,
     getHist,
-    # Deprecated aliases
     getImageArray,
     getImageFromArray,
 )
 
+try:
+    __version__ = _version("image_array_and_histogram")
+except PackageNotFoundError:  # pragma: no cover - running from a source tree without installation
+    __version__ = "0+unknown"
+
+__author__ = "Rishi Raj Singh Chauhan"
+
 __all__ = [
+    "__version__",
     "array_to_image",
     "getHist",
     "getImageArray",
@@ -22,6 +32,3 @@ __all__ = [
     "get_hist",
     "get_image_array",
 ]
-
-__author__ = "Rishi Raj Singh Chauhan"
-__version__ = "1.1.9"

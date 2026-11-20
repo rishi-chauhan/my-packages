@@ -157,11 +157,11 @@ def test_array_to_image_2d_dimension_validation():
     arr = np.arange(20, dtype=np.uint8).reshape(4, 5)
 
     # Mismatched width
-    with pytest.raises(ValueError, match="Provided width .* does not match"):
+    with pytest.raises(ValueError, match=r"Provided width .* does not match"):
         array_to_image(arr, width=10)
 
     # Mismatched height
-    with pytest.raises(ValueError, match="Provided height .* does not match"):
+    with pytest.raises(ValueError, match=r"Provided height .* does not match"):
         array_to_image(arr, height=10)
 
 
@@ -455,3 +455,24 @@ def test_density_returns_python_floats():
     hist = get_hist(np.array([[0, 1]], dtype=np.uint8), as_density=True)
     assert isinstance(hist, list)
     assert isinstance(hist[0], float)
+
+
+def test_version_matches_installed_metadata():
+    import importlib.metadata
+
+    import image_array_and_histogram
+
+    assert image_array_and_histogram.__version__ == importlib.metadata.version(
+        "image_array_and_histogram"
+    )
+
+
+def test_get_hist_empty_float_array():
+    hist = get_hist(np.zeros((0, 0), dtype=np.float64))
+    assert sum(hist) == 0
+
+
+def test_get_image_array_colour_without_grayscale_raises():
+    img = Image.new("RGB", (2, 2))
+    with pytest.raises(ValueError, match="Expected a 2D grayscale image"):
+        get_image_array(img, ensure_grayscale=False)

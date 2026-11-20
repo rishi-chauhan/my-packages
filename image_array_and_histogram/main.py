@@ -16,21 +16,21 @@ Earlier versions (<=1.0.x) produced arrays shaped (width, height).
 from __future__ import annotations
 
 import warnings
-from typing import Sequence, Union
+from typing import Any, Literal
 
 import numpy as np
+from numpy.typing import ArrayLike, NDArray
 from PIL import Image
 
-ArrayLike = Union[Sequence[int], np.ndarray]
+_OnOutOfRange = Literal["clip-warn", "raise"]
 
 
-def _to_uint8(arr: np.ndarray, *, on_out_of_range: str, what: str) -> np.ndarray:
+def _to_uint8(arr: NDArray[Any], *, on_out_of_range: _OnOutOfRange, what: str) -> NDArray[np.uint8]:
     """Convert an array to uint8 without hidden data corruption.
 
-    on_out_of_range: "clip-warn" -> clip to [0, 255] and emit RuntimeWarning
-                     "raise"     -> raise ValueError
-    Floats are rounded (np.rint), never truncated. NaN/inf always raise.
-    Booleans map to 0 / 255.
+    ``on_out_of_range="clip-warn"`` clips to [0, 255] and emits a ``RuntimeWarning``;
+    ``"raise"`` raises ``ValueError``. Floats are rounded (``np.rint``), never
+    truncated. NaN/inf always raise. Booleans map to 0 / 255.
     """
     if arr.dtype == np.uint8:
         return arr
@@ -57,7 +57,7 @@ def _to_uint8(arr: np.ndarray, *, on_out_of_range: str, what: str) -> np.ndarray
     return arr.astype(np.uint8)
 
 
-def get_image_array(image: Image.Image, ensure_grayscale: bool = True) -> np.ndarray:
+def get_image_array(image: Image.Image, ensure_grayscale: bool = True) -> NDArray[np.uint8]:
     """Return the image as a 2D NumPy uint8 array (height, width).
 
     Parameters
@@ -116,11 +116,13 @@ def get_hist(
 
     counts = np.bincount(arr.ravel(), minlength=256)
     if not as_density:
-        return counts.tolist()
+        int_counts: list[int] = counts.tolist()
+        return int_counts
     total = counts.sum()
     if total == 0:
         return [0.0] * 256
-    return (counts / total).tolist()
+    density: list[float] = (counts / total).tolist()
+    return density
 
 
 def array_to_image(
@@ -190,22 +192,22 @@ def array_to_image(
 # ---------------------------------------------------------------------------
 
 
-def getImageArray(image_object):
-    """Deprecated alias of :func:`get_image_array`."""
+def getImageArray(image_object: Image.Image) -> NDArray[np.uint8]:
+    """Return the image array (deprecated alias of :func:`get_image_array`)."""
     warnings.warn(
         "getImageArray is deprecated; use get_image_array", DeprecationWarning, stacklevel=2
     )
     return get_image_array(image_object)
 
 
-def getHist(image_arr):
-    """Deprecated alias of :func:`get_hist`."""
+def getHist(image_arr: Image.Image | ArrayLike) -> list[int] | list[float]:
+    """Return the histogram (deprecated alias of :func:`get_hist`)."""
     warnings.warn("getHist is deprecated; use get_hist", DeprecationWarning, stacklevel=2)
     return get_hist(image_arr)
 
 
-def getImageFromArray(arr, width, height):
-    """Deprecated alias of :func:`array_to_image`."""
+def getImageFromArray(arr: ArrayLike, width: int, height: int) -> Image.Image:
+    """Return an image from an array (deprecated alias of :func:`array_to_image`)."""
     warnings.warn(
         "getImageFromArray is deprecated; use array_to_image "
         "(note: shape semantics changed to (height,width))",
