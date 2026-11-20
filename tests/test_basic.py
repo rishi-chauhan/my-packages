@@ -1,14 +1,15 @@
+import warnings
+
 import numpy as np
 import pytest
-import warnings
 from PIL import Image
 
 from image_array_and_histogram import (
-    get_image_array,
-    get_hist,
     array_to_image,
-    getImageArray,
+    get_hist,
+    get_image_array,
     getHist,
+    getImageArray,
     getImageFromArray,
 )
 
@@ -76,7 +77,7 @@ def test_empty_array_histogram():
 def test_large_image():
     """Test handling of large images."""
     # Create a large 1000x1000 image
-    large_arr = np.random.randint(0, 256, size=(1000, 1000), dtype=np.uint8)
+    large_arr = np.random.default_rng(0).integers(0, 256, size=(1000, 1000), dtype=np.uint8)
     img = array_to_image(large_arr)
     assert img.size == (1000, 1000)
 
@@ -170,8 +171,8 @@ def test_array_to_image_3d_array():
         array_to_image(arr)
 
 
-def test_get_image_array_non_2d():
-    """Test that non-2D images raise error."""
+def test_get_image_array_converts_rgb_to_2d():
+    """RGB images are converted to a 2D grayscale array."""
     # Create a 3D array and try to pass it as grayscale
     arr_3d = np.zeros((5, 5, 3), dtype=np.uint8)
     img = Image.fromarray(arr_3d, mode='RGB')
@@ -317,8 +318,9 @@ def test_array_to_image_float_coercion():
     img = array_to_image(arr)
     back = get_image_array(img)
 
-    # Should be clipped and converted to uint8
+    # Should be rounded (not truncated) and converted to uint8
     assert back.dtype == np.uint8
+    np.testing.assert_array_equal(back, [[0, 128], [201, 255]])
 
 
 def test_get_hist_with_different_dtypes():
@@ -336,3 +338,116 @@ def test_get_hist_with_different_dtypes():
     assert hist[0] == 3
     assert hist[128] == 3
     assert hist[255] == 3
+
+
+# ============================================================================
+# 1.1.9 bug-fix regression tests
+# ============================================================================
+
+
+def test_validate_range_false_raises_on_out_of_range():
+    with pytest.raises(ValueError, match=r"arr values must be in \[0, 255\]"):
+        array_to_image(np.array([[300]]), validate_range=False)
+    with pytest.raises(ValueError, match=r"arr values must be in \[0, 255\]"):
+        array_to_image(np.array([[-1, 5]]), validate_range=False)
+    # In-range values are fine
+    img = array_to_image(np.array([[0, 255]]), validate_range=False)
+    np.testing.assert_array_equal(get_image_array(img), [[0, 255]])
+
+
+def test_get_hist_rgb_array_out_of_range_does_not_wrap():
+    with pytest.warns(RuntimeWarning, match="clipped"):
+        hist = get_hist(np.array([[[300, 300, 300]]]))
+    assert hist[255] == 1
+    assert hist[44] == 0
+
+
+def test_get_hist_gray_out_of_range_warns():
+    with pytest.warns(RuntimeWarning, match="clipped"):
+        hist = get_hist(np.array([[300, -5]]))
+    assert hist[255] == 1
+    assert hist[0] == 1
+
+
+def test_get_hist_in_range_int_array_does_not_warn():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        hist = get_hist(np.array([[0, 255]], dtype=np.int64))
+    assert hist[0] == 1
+    assert hist[255] == 1
+
+
+def test_array_to_image_empty_raises_clear_error():
+    with pytest.raises(ValueError, match="at least one pixel"):
+        array_to_image(np.zeros((0, 0)))
+    with pytest.raises(ValueError, match="at least one pixel"):
+        array_to_image(np.zeros((0, 3)))
+    for kwargs in ({"width": 0, "height": 5}, {"width": 5, "height": -1}):
+        name = "width" if kwargs["width"] <= 0 else "height"
+        with pytest.raises(ValueError, match=f"{name} must be a positive integer"):
+            array_to_image([], **kwargs)
+
+
+def test_array_to_image_empty_flat_without_dims_raises():
+    with pytest.raises(ValueError, match="width and height are required"):
+        array_to_image([])
+
+
+def test_float_values_are_rounded_not_truncated():
+    img = array_to_image(np.array([[127.9, 127.4, 0.5, 1.5]]))
+    np.testing.assert_array_equal(get_image_array(img), [[128, 127, 0, 2]])
+    hist = get_hist(np.array([[127.9]]))
+    assert hist[128] == 1
+
+
+@pytest.mark.parametrize("bad", [np.nan, np.inf, -np.inf])
+def test_nan_and_inf_raise(bad):
+    arr = np.array([[1.0, bad]])
+    with pytest.raises(ValueError, match="NaN or infinite"):
+        get_hist(arr)
+    with pytest.raises(ValueError, match="NaN or infinite"):
+        array_to_image(arr)
+
+
+def test_non_numeric_dtype_raises_type_error():
+    with pytest.raises(TypeError, match="must be numeric"):
+        array_to_image(np.array([["a", "b"]]))
+    with pytest.raises(TypeError, match="must be numeric"):
+        get_hist(np.array([[1 + 2j]]))
+
+
+def test_bool_array_maps_to_0_and_255():
+    mask = np.array([[True, False], [False, True]])
+    img = array_to_image(mask)
+    np.testing.assert_array_equal(get_image_array(img), [[255, 0], [0, 255]])
+    hist = get_hist(mask)
+    assert hist[0] == 2
+    assert hist[255] == 2
+
+
+def test_warning_points_to_caller():
+    with pytest.warns(RuntimeWarning) as record:
+        array_to_image(np.array([[300]]))
+    assert record[0].filename == __file__
+    with pytest.warns(RuntimeWarning) as record:
+        get_hist(np.array([[300]]))
+    assert record[0].filename == __file__
+
+
+def test_get_image_array_16bit_without_grayscale_clips_with_warning():
+    img = Image.fromarray(np.array([[10, 1000]], dtype=np.uint16))
+    with pytest.warns(RuntimeWarning, match="clipped"):
+        arr = get_image_array(img, ensure_grayscale=False)
+    assert arr.dtype == np.uint8
+    np.testing.assert_array_equal(arr, [[10, 255]])
+
+
+def test_array_to_image_returns_mode_l():
+    img = array_to_image(np.array([[1.0, 2.0]]))
+    assert img.mode == "L"
+
+
+def test_density_returns_python_floats():
+    hist = get_hist(np.array([[0, 1]], dtype=np.uint8), as_density=True)
+    assert isinstance(hist, list)
+    assert isinstance(hist[0], float)

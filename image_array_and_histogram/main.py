@@ -6,30 +6,56 @@ Public, preferred (PEP-8) function names:
   - array_to_image
 
 Backward compatible aliases with the historical camelCase API are provided
-in ``__init__.py`` (getImageArray, getHist, getImageFromArray) and emit a
-DeprecationWarning when used.
+(getImageArray, getHist, getImageFromArray) and emit a DeprecationWarning when
+used.
 
-All arrays now follow the conventional NumPy image layout of (height, width).
-Earlier versions (<=1.0.x) produced arrays shaped (width, height). This was
-confusing and is considered a bug fix; the minor version has been bumped.
+All arrays follow the conventional NumPy image layout of (height, width).
+Earlier versions (<=1.0.x) produced arrays shaped (width, height).
 """
 
 from __future__ import annotations
 
-from typing import Sequence, Union, Optional
 import warnings
+from typing import Sequence, Union
 
 import numpy as np
 from PIL import Image
 
 ArrayLike = Union[Sequence[int], np.ndarray]
 
-def _ensure_uint8(arr: np.ndarray) -> np.ndarray:
-    """Coerce an array to dtype uint8 (0-255) safely."""
-    if arr.dtype != np.uint8:
-        # Clip to range then cast
-        arr = np.clip(arr, 0, 255).astype(np.uint8)
-    return arr
+
+def _to_uint8(arr: np.ndarray, *, on_out_of_range: str, what: str) -> np.ndarray:
+    """Convert an array to uint8 without hidden data corruption.
+
+    on_out_of_range: "clip-warn" -> clip to [0, 255] and emit RuntimeWarning
+                     "raise"     -> raise ValueError
+    Floats are rounded (np.rint), never truncated. NaN/inf always raise.
+    Booleans map to 0 / 255.
+    """
+    if arr.dtype == np.uint8:
+        return arr
+    if arr.dtype == np.bool_:
+        return arr.astype(np.uint8) * np.uint8(255)
+    if arr.size == 0:
+        return arr.astype(np.uint8)
+    if arr.dtype.kind == "f":
+        if not np.isfinite(arr).all():
+            raise ValueError(f"{what} contains NaN or infinite values")
+        arr = np.rint(arr)
+    elif arr.dtype.kind not in "iu":
+        raise TypeError(f"{what} must be numeric, got dtype {arr.dtype}")
+    lo, hi = arr.min(), arr.max()
+    if lo < 0 or hi > 255:
+        if on_out_of_range == "raise":
+            raise ValueError(f"{what} values must be in [0, 255]; got range [{lo}, {hi}]")
+        warnings.warn(
+            f"{what} values outside [0, 255] were clipped (range was [{lo}, {hi}])",
+            RuntimeWarning,
+            stacklevel=3,
+        )
+        arr = np.clip(arr, 0, 255)
+    return arr.astype(np.uint8)
+
 
 def get_image_array(image: Image.Image, ensure_grayscale: bool = True) -> np.ndarray:
     """Return the image as a 2D NumPy uint8 array (height, width).
@@ -40,46 +66,70 @@ def get_image_array(image: Image.Image, ensure_grayscale: bool = True) -> np.nda
         Input PIL image.
     ensure_grayscale : bool, default True
         If True and the image is not already in mode 'L', it is converted.
+
+    Notes
+    -----
+    In 1.x the result is always 8-bit. 16-bit (``I;16``/``I``) and float
+    (``F``) images are clipped to [0, 255] (with a ``RuntimeWarning``) when
+    ``ensure_grayscale=False``, or collapsed by Pillow's ``convert("L")``
+    otherwise. Native 16-bit and float support arrives in 2.0.
     """
     if ensure_grayscale and image.mode != "L":
         image = image.convert("L")
     arr = np.asarray(image)
     if arr.ndim != 2:
-        raise ValueError("Expected a 2D grayscale image; got shape %r" % (arr.shape,))
-    return _ensure_uint8(arr)
+        raise ValueError(f"Expected a 2D grayscale image; got shape {arr.shape!r}")
+    return _to_uint8(arr, on_out_of_range="clip-warn", what="image")
 
-def get_hist(image_or_array: Union[Image.Image, ArrayLike], *, as_density: bool = False) -> list[int] | list[float]:
+
+def get_hist(
+    image_or_array: Image.Image | ArrayLike, *, as_density: bool = False
+) -> list[int] | list[float]:
     """Return the 256-bin histogram for a grayscale image/array.
 
     Parameters
     ----------
     image_or_array : Image or array-like
-        A grayscale PIL Image (any mode accepted; converted to 'L') or a 2D
-        NumPy/list-like of pixel intensities 0..255.
+        A PIL Image (any mode accepted; converted to 'L'), a 2D array of
+        pixel intensities 0..255, or an (H, W, 3/4) RGB(A) array (converted to
+        grayscale with Pillow; alpha is dropped).
     as_density : bool, default False
         If True return normalized probabilities summing to 1.0; otherwise counts.
+
+    Notes
+    -----
+    Float values are rounded to the nearest integer. Values outside [0, 255]
+    are clipped with a ``RuntimeWarning``. NaN or infinite values raise
+    ``ValueError``.
     """
     if isinstance(image_or_array, Image.Image):
         arr = get_image_array(image_or_array, ensure_grayscale=True)
     else:
-        arr = np.array(image_or_array)
+        arr = np.asarray(image_or_array)
         if arr.ndim == 3 and arr.shape[-1] in (3, 4):  # RGB(A) passed directly
-            # Convert through PIL to reuse conversion logic
-            pil = Image.fromarray(arr.astype(np.uint8))
-            arr = get_image_array(pil, ensure_grayscale=True)
+            arr = _to_uint8(arr, on_out_of_range="clip-warn", what="image_or_array")
+            rgb = arr[..., :3] if arr.shape[-1] == 4 else arr
+            arr = np.asarray(Image.fromarray(np.ascontiguousarray(rgb)).convert("L"))
         if arr.ndim != 2:
-            raise ValueError("Expected a 2D array of grayscale pixels; got shape %r" % (arr.shape,))
-        arr = _ensure_uint8(arr)
+            raise ValueError(f"Expected a 2D array of grayscale pixels; got shape {arr.shape!r}")
+        arr = _to_uint8(arr, on_out_of_range="clip-warn", what="image_or_array")
 
-    counts = np.bincount(arr.ravel(), minlength=256)[:256]
+    counts = np.bincount(arr.ravel(), minlength=256)
     if not as_density:
         return counts.tolist()
     total = counts.sum()
     if total == 0:
         return [0.0] * 256
-    return (counts / total).astype(float).tolist()
+    return (counts / total).tolist()
 
-def array_to_image(arr: ArrayLike, width: Optional[int] = None, height: Optional[int] = None, *, validate_range: bool = True) -> Image.Image:
+
+def array_to_image(
+    arr: ArrayLike,
+    width: int | None = None,
+    height: int | None = None,
+    *,
+    validate_range: bool = True,
+) -> Image.Image:
     """Create a grayscale PIL Image from an array.
 
     Parameters
@@ -90,17 +140,30 @@ def array_to_image(arr: ArrayLike, width: Optional[int] = None, height: Optional
         provided.
     width, height : int, optional
         Dimensions (required for flat 1D input). Ignored for 2D input unless
-        provided for validation.
+        provided for validation. Must be positive.
     validate_range : bool, default True
-        If True clamp values to [0,255]; otherwise values outside range raise.
+        If True, values outside [0, 255] are clipped with a ``RuntimeWarning``.
+        If False, values outside [0, 255] raise ``ValueError``.
+
+    Notes
+    -----
+    Float values are rounded to the nearest integer (round half to even),
+    never truncated. Boolean arrays map ``False -> 0`` and ``True -> 255``.
+    NaN or infinite values raise ``ValueError``.
     """
-    np_arr = np.array(arr)
+    for name, value in (("width", width), ("height", height)):
+        if value is not None and value <= 0:
+            raise ValueError(f"{name} must be a positive integer, got {value}")
+
+    np_arr = np.asarray(arr)
     if np_arr.ndim == 1:
         if width is None or height is None:
             raise ValueError("width and height are required when passing a 1D array")
         expected = width * height
         if np_arr.size != expected:
-            raise ValueError(f"Flat array length {np_arr.size} does not equal width*height {expected}")
+            raise ValueError(
+                f"Flat array length {np_arr.size} does not equal width*height {expected}"
+            )
         np_arr = np_arr.reshape(height, width)  # (H, W)
     elif np_arr.ndim == 2:
         h, w = np_arr.shape
@@ -111,26 +174,42 @@ def array_to_image(arr: ArrayLike, width: Optional[int] = None, height: Optional
     else:
         raise ValueError("Only 1D or 2D arrays supported for grayscale images")
 
-    if validate_range:
-        if np_arr.min() < 0 or np_arr.max() > 255:
-            warnings.warn("Pixel values clipped to [0,255]", RuntimeWarning)
-            np_arr = np.clip(np_arr, 0, 255)
-    np_arr = _ensure_uint8(np_arr)
-    return Image.fromarray(np_arr, mode="L")
+    if np_arr.size == 0:
+        raise ValueError("arr must contain at least one pixel")
+
+    np_arr = _to_uint8(
+        np_arr,
+        on_out_of_range="clip-warn" if validate_range else "raise",
+        what="arr",
+    )
+    return Image.fromarray(np.ascontiguousarray(np_arr))
+
 
 # ---------------------------------------------------------------------------
 # Backward compatibility wrappers (deprecated camelCase names)
 # ---------------------------------------------------------------------------
 
-def getImageArray(image_object):  # pragma: no cover - thin wrapper
-    warnings.warn("getImageArray is deprecated; use get_image_array", DeprecationWarning, stacklevel=2)
+
+def getImageArray(image_object):
+    """Deprecated alias of :func:`get_image_array`."""
+    warnings.warn(
+        "getImageArray is deprecated; use get_image_array", DeprecationWarning, stacklevel=2
+    )
     return get_image_array(image_object)
 
-def getHist(image_arr):  # pragma: no cover
+
+def getHist(image_arr):
+    """Deprecated alias of :func:`get_hist`."""
     warnings.warn("getHist is deprecated; use get_hist", DeprecationWarning, stacklevel=2)
     return get_hist(image_arr)
 
-def getImageFromArray(arr, width, height):  # pragma: no cover
-    warnings.warn("getImageFromArray is deprecated; use array_to_image (note: shape semantics changed to (height,width))", DeprecationWarning, stacklevel=2)
-    return array_to_image(arr, width=width, height=height)
 
+def getImageFromArray(arr, width, height):
+    """Deprecated alias of :func:`array_to_image`."""
+    warnings.warn(
+        "getImageFromArray is deprecated; use array_to_image "
+        "(note: shape semantics changed to (height,width))",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return array_to_image(arr, width=width, height=height)
